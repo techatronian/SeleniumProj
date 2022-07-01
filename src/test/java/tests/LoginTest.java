@@ -2,11 +2,19 @@ package tests;
 
 import static org.testng.Assert.expectThrows;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -19,6 +27,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.aventstack.extentreports.Status;
@@ -28,11 +37,18 @@ import pages.HomePage;
 import pages.LoginPage;
 import pages.ProductPage;
 import utils.TestBase;
+import utils.Testdata;
 
 public class LoginTest extends TestBase{
 
-	@Test
-	public void Validate_LoginTest() {
+	private static XSSFSheet excelSheet;
+	private static XSSFWorkbook excelWorkbook;
+	private static XSSFCell cell;
+	private static XSSFRow row;
+	
+	
+	@Test(dataProvider = "ExcelData")
+	public void Validate_LoginTest(String username, String password) {
 		
 		//Navigate from Home to Login Page
 		HomePage objHome = new HomePage(driver);
@@ -41,11 +57,11 @@ public class LoginTest extends TestBase{
 		
 		//Login Application in Login Page
 		LoginPage objLogin = new LoginPage(driver);
-		objLogin.LoginInToYourAccount("test1111@gmail.com", "password");
+		objLogin.LoginInToYourAccount(username,password);
 		test.log(Status.INFO, "Enter Email&Password and click on login");
 		
 		//Validate User in HomePage
-		Assert.assertEquals(objHome.getUserName(), "test");
+		Assert.assertEquals(objHome.getUserName(), Testdata.getData("expectedUserName"));
 		test.log(Status.PASS, "The USername is successfully matched.."+objHome.getUserName());
 		
 		//Navigate from Hpme to Product Page
@@ -59,7 +75,14 @@ public class LoginTest extends TestBase{
 		
 	}
 	
-	@Test
+	@Test(enabled = false)
+	public void RegisterUser(String username, String password) {
+		System.out.println(username);
+		System.out.println(password);
+		test.log(Status.PASS, "User registration is successfull");
+	}
+	
+	@Test(enabled = false)
 	public void Validate_TopMenuLinks() {
 		HomePage objHome = new HomePage(driver);		
 		List<String> Expected = Arrays.asList("Home"," ? Products"," Cart"," Signup / Login"," Test Cases"," API Testing"," Video Tutorials"," Contact us");
@@ -70,6 +93,66 @@ public class LoginTest extends TestBase{
 		Assert.assertTrue(Expected.containsAll(objHome.getTopMenuLinks()));
 	}
 	
+	
+	@DataProvider(name = "objectData")
+	public Object[][] dataproviderMethod(){
+		
+		return new Object[][] {{"test1111@gmail.com","password"},{"test2@gmail.com","password2"}};
+		
+	}
+	
+	@DataProvider(name="ExcelData")
+	public Object[][] excelDataprovider() throws IOException{
+		
+		return getExcelData("D:\\Training_Eclipse_Workspace\\SeleniumJavaProject\\src\\test\\resources\\TestData.xlsx","Sheet1");
+	}
+	
+	
+	
+	public static Object[][] getExcelData(String fileName, String sheetname) throws IOException {
+		
+		String[][] dataArray = null;
+		
+		try {
+			FileInputStream fis = new FileInputStream(fileName);
+			excelWorkbook = new XSSFWorkbook(fis);
+			excelSheet = excelWorkbook.getSheet(sheetname);
+			
+			int Startrow = 0;
+			int Startcol = 0;
+			
+			int totalRows = 1;
+			int totalCols = 1;
+			
+			dataArray = new String[totalRows+1][totalCols+1];
+			int k = 0,l=0;
+			for(int i=Startrow;i<=totalRows;i++) {
+				for(int j=Startcol;j<=totalCols;j++) {
+					dataArray[i][j] = getCellData(i,j);
+					System.out.println(dataArray[i][j]);
+				}
+			}
+			
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return dataArray;
+		
+	}
+	
+	public static String getCellData(int row, int col) {
+		try {
+		cell = excelSheet.getRow(row).getCell(col);
+		String data = cell.getStringCellValue();		
+		return data;}
+		catch (Exception e) {
+			return "";
+		}
+		
+	}
 
 	 
 }

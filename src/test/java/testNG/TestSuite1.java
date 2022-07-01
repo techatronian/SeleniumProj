@@ -13,51 +13,19 @@ import org.testng.annotations.AfterTest;
 
 public class TestSuite1 {
 
-	@Test
-	@Parameters("ToolName")
-	public void myTest01(String ToolName) {
-		System.out.println("Testcase01 and the tool name is "+ToolName);
-	}
-	
-	@BeforeTest
-	public void beforeTest() {
-		System.out.println("before test TestSuite1");
-	}
-	
-	@AfterTest
-	public void afterTest() {
-		System.out.println("after test TestSuite1");
-	}
-	
-	
-	@Test
-	public void myTest02() {
+	@Test(priority = 3)
+	public void myTest01() {
 		System.out.println("Testcase02");
+
 	}
 
-	@BeforeMethod
-	public void beforeMethod() {
-		System.out.println("before method TestSuite1...");
+	@Test(priority = 2)
+	public void myTest02() {
+		System.out.println("Testcase01");
 	}
 
-	@AfterMethod
-	public void afterMethod() {
-		System.out.println("after method TestSuite1...");
+	@Test(priority = 1)
+	public void myTest03() {
+		System.out.println("Testcase03");
 	}
-
-	@BeforeClass
-	public void beforeClass() {
-		System.out.println("before class TestSuite1...");
-	}
-
-	@AfterClass
-	public void afterClass() {
-		System.out.println("after class TestSuite1...");
-	}
-
-	@BeforeSuite
-	public void beforeSuite() {
-		System.out.println("before suite TestSuite1...");
-	}
-
 }

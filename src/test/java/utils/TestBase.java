@@ -12,6 +12,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
@@ -47,7 +48,7 @@ public class TestBase extends Screenshot {
 	}
 
 	@BeforeSuite
-	public void DriverInitialization() {
+	public void ReportInitialization() {
 
 		extent = new ExtentReports();
 		spark = new ExtentSparkReporter(System.getProperty("user.dir") + "//target/result.html");
@@ -58,27 +59,37 @@ public class TestBase extends Screenshot {
 		extent.setSystemInfo("Application", "Retail application");
 		extent.setSystemInfo("Browser", "Chrome");
 		extent.setSystemInfo("Suite", "Regression");		
-
 	}
 	
 	@BeforeTest
-	@Parameters("browser")
-	public void SetupBrowser(String browser) {
-		switch (browser) {
+	@Parameters("browserType")
+	public void DriverInitialization(String browserType ) {		
+		switch (browserType) {
 		case "chrome":
 			WebDriverManager.chromedriver().setup();
 			driver = new ChromeDriver();
 			break;
+
 		case "firefox":
 			WebDriverManager.firefoxdriver().setup();
 			driver = new FirefoxDriver();
 			break;
+		
+		default :
+			WebDriverManager.chromedriver().setup();
+			driver = new ChromeDriver();
+			
 		}
 	}
+	
+	@AfterTest
+	public void TerminateDriver() {
+		driver.quit();
+	}
+	
 
 	@AfterSuite
-	public void DriverTermination() {
-		driver.quit();
+	public void TerminateReport() {		
 		extent.flush();
 	}
 

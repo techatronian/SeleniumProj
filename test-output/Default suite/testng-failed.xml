@@ -5,13 +5,14 @@
     <classes>
       <class name="tests.LoginTest">
         <methods>
+          <include name="RegisterUser"/>
           <include name="CreateTestforReport"/>
-          <include name="beforeClass"/>
           <include name="DriverInitialization"/>
-          <include name="SetupBrowser"/>
+          <include name="beforeClass"/>
           <include name="PrintResults"/>
-          <include name="DriverTermination"/>
-          <include name="Validate_TopMenuLinks"/>
+          <include name="TerminateReport"/>
+          <include name="TerminateDriver"/>
+          <include name="ReportInitialization"/>
           <include name="afterClass"/>
         </methods>
       </class> <!-- tests.LoginTest -->
