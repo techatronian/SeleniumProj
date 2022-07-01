@@ -11,6 +11,7 @@
           <include name="beforeClass"/>
           <include name="SetupBrowser"/>
           <include name="PrintResults"/>
+          <include name="Validate_LoginTest"/>
           <include name="DriverTermination"/>
           <include name="Validate_TopMenuLinks"/>
           <include name="afterClass"/>
